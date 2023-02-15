@@ -2,39 +2,43 @@ import React from 'react'
 import Task from './Task'
 
 const StatusLine = (props) => {
-    const {status, tasks, addTask, delTask, addEmptyTask, moveTask}= props;
+    const { status, tasks, addTask, deleteTask, addEmptyTask, moveTask } = props;
 
     let taskList, tasksForStatus;
-
-    function handleAddEmpty(){
-        addEmptyTask(status)
+  
+    function handleAddEmpty() {
+      addEmptyTask(status);
     }
-
-    if(tasks){
-        tasksForStatus=tasks.filter((tasks) => {return tasks.status===status;})
+  
+    if (tasks) {
+      tasksForStatus = tasks.filter((task) => {
+        return task.status === status;
+      });
     }
-
-    if(tasksForStatus){
-        taskList = tasksForStatus.map((tasks) => {
-            return(
-                <Task
-                addTask={(tasks) => addTask(tasks)}
-                delTask={(id) => delTask(id)}
-                moveTask={(id, status) => moveTask(id, status)}
-                key={tasks.id}
-                tasks={tasks}
-                />
-            )
-        })
+  
+    if (tasksForStatus) {
+      taskList = tasksForStatus.map((task) => {
+        return (
+          <Task
+            addTask={(task) => addTask(task)}
+            deleteTask={(id) => deleteTask(id)}
+            moveTask={(id, status) => moveTask(id, status)}
+            key={task.id}
+            task={task}
+          />
+        );
+      });
     }
-
-  return (
-    <div className='statusLine'>
+  
+    return (
+      <div className="statusLine">
         <h3>{status}</h3>
         {taskList}
-        <button onClick={handleAddEmpty} className='addBtn'>+</button>
-    </div>
-  )
-}
+        <button onClick={handleAddEmpty} className="button addTask">
+          +
+        </button>
+      </div>
+    );
+  }
 
 export default StatusLine

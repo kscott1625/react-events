@@ -1,13 +1,16 @@
-import StatusLine from './StatusLine';
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
+import "../styles/styles.css"
+import StatusLine from "./StatusLine";
+
 function App() {
   const [tasks, setTasks] = useState([]);
 
   useEffect(() => {
-    console.log('using Effect');
+    loadTasksFromLocalStorage();
   }, []);
 
-  function addEmptyTask(status) {const lastTask = tasks[tasks.length - 1];
+  function addEmptyTask(status) {
+    const lastTask = tasks[tasks.length - 1];
 
     let newTaskId = 1;
 
@@ -27,62 +30,89 @@ function App() {
     ]);
   }
 
-  function addTask(taskToAdd) {let filteredTasks = tasks.filter((task) => {
-    return task.id !== taskToAdd.id;
-  });
+  function addTask(taskToAdd) {
+    let filteredTasks = tasks.filter((task) => {
+      return task.id !== taskToAdd.id;
+    });
 
-  let newTaskList = [...filteredTasks, taskToAdd];
+    let newTaskList = [...filteredTasks, taskToAdd];
 
-  setTasks(newTaskList);
+    setTasks(newTaskList);
 
-  
-}
+    saveTasksToLocalStorage(newTaskList);
+  }
 
-function delTask(taskId) {
-  let filteredTasks = tasks.filter((task) => {
-    return task.id !== taskId;
-  });
+  function deleteTask(taskId) {
+    let filteredTasks = tasks.filter((task) => {
+      return task.id !== taskId;
+    });
 
-  setTasks(filteredTasks);
+    setTasks(filteredTasks);
 
-}
+    saveTasksToLocalStorage(filteredTasks);
+  }
 
   function moveTask(id, newStatus) {
     let task = tasks.filter((task) => {
-        return task.id === id;
-      })[0];
-  
-      let filteredTasks = tasks.filter((task) => {
-        return task.id !== id;
-      });
-  
-      task.status = newStatus;
-  
-      let newTaskList = [...filteredTasks, task];
-  
-      setTasks(newTaskList);
+      return task.id === id;
+    })[0];
+
+    let filteredTasks = tasks.filter((task) => {
+      return task.id !== id;
+    });
+
+    task.status = newStatus;
+
+    let newTaskList = [...filteredTasks, task];
+
+    setTasks(newTaskList);
+
+    saveTasksToLocalStorage(newTaskList);
   }
-  function saveToLocalStorage(tasks) {
+
+  function saveTasksToLocalStorage(tasks) {
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }
 
-  function laodTasks() {
+  function loadTasksFromLocalStorage() {
     let loadedTasks = localStorage.getItem("tasks");
 
     let tasks = JSON.parse(loadedTasks);
 
     if (tasks) {
       setTasks(tasks);
+    }
   }
-  }
+
   return (
     <div className="App">
-      <h1>Let's Be Productive!</h1>
+      <h1>Task Management</h1>
       <main>
         <section>
-          <StatusLine tasks={tasks} addEmptyTask={addEmptyTask} addTask={addTask} delTask={delTask} moveTask={moveTask} status="Backlog"/>
-          <StatusLine tasks={tasks} addEmptyTask={addEmptyTask} addTask={addTask} delTask={delTask} moveTask={moveTask} status="In Progress" />
-          <StatusLine tasks={tasks} addEmptyTask={addEmptyTask} addTask={addTask} delTask={delTask} moveTask={moveTask} status="Done" />
+          <StatusLine
+            tasks={tasks}
+            addEmptyTask={addEmptyTask}
+            addTask={addTask}
+            deleteTask={deleteTask}
+            moveTask={moveTask}
+            status="Backlog"
+          />
+          <StatusLine
+            tasks={tasks}
+            addEmptyTask={addEmptyTask}
+            addTask={addTask}
+            deleteTask={deleteTask}
+            moveTask={moveTask}
+            status="In Progress"
+          />
+          <StatusLine
+            tasks={tasks}
+            addEmptyTask={addEmptyTask}
+            addTask={addTask}
+            deleteTask={deleteTask}
+            moveTask={moveTask}
+            status="Done"
+          />
         </section>
       </main>
     </div>
